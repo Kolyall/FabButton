@@ -26,6 +26,7 @@
 <resources>
     <declare-styleable name="CircleImageView">
         <attr name="android:src" />
+        <attr name="android:tint" />
         <attr name="android:color" />
         <attr name="android:indeterminate"/>
         <attr name="android:progress"/>

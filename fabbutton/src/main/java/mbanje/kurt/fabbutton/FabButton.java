@@ -47,8 +47,9 @@ import java.util.List;
 @CoordinatorLayout.DefaultBehavior(FabButton.Behavior.class)
 public class FabButton extends FrameLayout implements CircleImageView.OnFabViewListener {
 
-    private CircleImageView circle;
-    private ProgressRingView ring;
+    private CircleImageView mCircleImageView;
+    private ProgressRingView mProgressRingView;
+
     private float ringWidthRatio = 0.14f; //of a possible 1f;
     private boolean indeterminate;
     private boolean autostartanim;
@@ -72,13 +73,16 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
     }
 
     protected void init(Context context, AttributeSet attrs, int defStyle) {
-        View v = View.inflate(context, R.layout.widget_fab_button, this);
-        setClipChildren(false);
-        circle = (CircleImageView) v.findViewById(R.id.fabbutton_circle);
-        ring = (ProgressRingView) v.findViewById(R.id.fabbutton_ring);
-        circle.setFabViewListener(this);
-        ring.setFabViewListener(this);
+        View.inflate(context, R.layout.widget_fab_button, this);
+//        setClipChildren(false);
+//        setFocusable(true);
+//        setClickable(true);
+        mCircleImageView = (CircleImageView) findViewById(R.id.fabbutton_circle);
+        mProgressRingView = (ProgressRingView) findViewById(R.id.fabbutton_ring);
+        mCircleImageView.setFabViewListener(this);
+        mProgressRingView.setFabViewListener(this);
         int color = Color.BLACK;
+        int tint = Color.BLACK;
         int progressColor = Color.BLACK;
         int animDuration = 4000;
         int icon = -1;
@@ -94,56 +98,57 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
             autostartanim = a.getBoolean(R.styleable.CircleImageView_fbb_autoStart, true);
             animDuration = a.getInteger(R.styleable.CircleImageView_android_indeterminateDuration, animDuration);
             icon = a.getResourceId(R.styleable.CircleImageView_android_src, icon);
+            tint = a.getColor(R.styleable.CircleImageView_android_tint, Color.BLACK);
             ringWidthRatio = a.getFloat(R.styleable.CircleImageView_fbb_progressWidthRatio, ringWidthRatio);
             endBitmapResource = a.getResourceId(R.styleable.CircleImageView_fbb_endBitmap, R.drawable.ic_fab_complete);
             showEndBitmap = a.getBoolean(R.styleable.CircleImageView_fbb_showEndBitmap, false);
             hideProgressOnComplete = a.getBoolean(R.styleable.CircleImageView_fbb_hideProgressOnComplete, false);
-            circle.setShowShadow(a.getBoolean(R.styleable.CircleImageView_fbb_showShadow, true));
+            mCircleImageView.setShowShadow(a.getBoolean(R.styleable.CircleImageView_fbb_showShadow, true));
             a.recycle();
         }
 
-        circle.setColor(color);
-        circle.setShowEndBitmap(showEndBitmap);
-        circle.setRingWidthRatio(ringWidthRatio);
-        ring.setProgressColor(progressColor);
-        ring.setProgress(progress);
-        ring.setMaxProgress(maxProgress);
-        ring.setAutostartanim(autostartanim);
-        ring.setAnimDuration(animDuration);
-        ring.setRingWidthRatio(ringWidthRatio);
-        ring.setIndeterminate(indeterminate);
+        mCircleImageView.setColor(color);
+        mCircleImageView.setShowEndBitmap(showEndBitmap);
+        mCircleImageView.setRingWidthRatio(ringWidthRatio);
+        mProgressRingView.setProgressColor(progressColor);
+        mProgressRingView.setProgress(progress);
+        mProgressRingView.setMaxProgress(maxProgress);
+        mProgressRingView.setAutostartanim(autostartanim);
+        mProgressRingView.setAnimDuration(animDuration);
+        mProgressRingView.setRingWidthRatio(ringWidthRatio);
+        mProgressRingView.setIndeterminate(indeterminate);
         if (icon != -1) {
-            circle.setIcon(icon, endBitmapResource);
+            mCircleImageView.setIcon(icon, endBitmapResource,tint);
         }
     }
 
     public void setShadow(boolean showShadow) {
-        circle.setShowShadow(showShadow);
+        mCircleImageView.setShowShadow(showShadow);
     }
 
     public void setIcon(int resource, int endIconResource) {
-        circle.setIcon(resource, endIconResource);
+        mCircleImageView.setIcon(resource, endIconResource, Color.BLACK);
     }
 
     public void showShadow(boolean show) {
-        circle.setShowShadow(show);
+        mCircleImageView.setShowShadow(show);
         invalidate();
     }
 
     public void setColor(int color) {
-        circle.setColor(color);
+        mCircleImageView.setColor(color);
     }
 
     public void setProgressColor(int color) {
-        ring.setProgressColor(color);
+        mProgressRingView.setProgressColor(color);
     }
 
     public void setIcon(Drawable icon, Drawable endIcon) {
-        circle.setIcon(icon, endIcon);
+        mCircleImageView.setIcon(icon, endIcon);
     }
 
     public void resetIcon() {
-        circle.resetIcon();
+        mCircleImageView.resetIcon();
     }
 
     /**
@@ -153,15 +158,15 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
      */
     public void setIndeterminate(boolean indeterminate) {
         this.indeterminate = indeterminate;
-        ring.setIndeterminate(indeterminate);
+        mProgressRingView.setIndeterminate(indeterminate);
     }
 
-    @Override
-    public void setOnClickListener(OnClickListener listener) {
-        super.setOnClickListener(listener);
-        ring.setOnClickListener(listener);
-        circle.setOnClickListener(listener);
-    }
+//    @Override
+//    public void setOnClickListener(OnClickListener listener) {
+//        super.setOnClickListener(listener);
+//        mProgressRingView.setOnClickListener(listener);
+//        mCircleImageView.setOnClickListener(listener);
+//    }
 
     /**
      * shows the animation ring
@@ -169,7 +174,7 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
      * @param show shows animation ring when set to true
      */
     public void showProgress(boolean show) {
-        circle.showRing(show);
+        mCircleImageView.showRing(show);
     }
 
     public void hideProgressOnComplete(boolean hide) {
@@ -178,8 +183,8 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
 
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        circle.setEnabled(enabled);
-        ring.setEnabled(enabled);
+        mCircleImageView.setEnabled(enabled);
+        mProgressRingView.setEnabled(enabled);
     }
 
     /**
@@ -188,26 +193,34 @@ public class FabButton extends FrameLayout implements CircleImageView.OnFabViewL
      * @param progress the current progress to set value too
      */
     public void setProgress(float progress) {
-        ring.setProgress(progress);
+        mProgressRingView.setProgress(progress);
+    }
+
+    public void setProgress(float progress, boolean withAnimation) {
+        mProgressRingView.setProgress(progress, withAnimation);
     }
 
     @Override
     public void onProgressVisibilityChanged(boolean visible) {
         if (visible) {
-            ring.setVisibility(View.VISIBLE);
-            ring.startAnimation();
+            mProgressRingView.setVisibility(View.VISIBLE);
+            mProgressRingView.startAnimation();
         } else {
-            ring.stopAnimation(true);
-            ring.setVisibility(View.GONE);
+            mProgressRingView.stopAnimation(true);
+            mProgressRingView.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void onProgressCompleted() {
-        circle.showCompleted(showEndBitmap, hideProgressOnComplete);
+        mCircleImageView.showCompleted(showEndBitmap, hideProgressOnComplete);
         if (hideProgressOnComplete) {
-            ring.setVisibility(View.GONE);
+            mProgressRingView.setVisibility(View.GONE);
         }
+    }
+
+    public void setMax(int maxProgress) {
+        mProgressRingView.setMaxProgress(maxProgress);
     }
 
 

@@ -29,14 +29,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -108,7 +108,7 @@ public class CircleImageView extends AppCompatImageView {
     private void init(Context context, AttributeSet attrs) {
         this.setFocusable(false);
         this.setScaleType(ScaleType.CENTER_INSIDE);
-        setClickable(true);
+//        setClickable(true);
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint.setStyle(Paint.Style.FILL);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -155,17 +155,20 @@ public class CircleImageView extends AppCompatImageView {
     /**
      * sets the icon that will be shown on the fab icon
      *
-     * @param resource the resource id of the icon
+     * @param drawableResId the resource id of the icon
      */
-    public void setIcon(int resource, int endBitmapResource) {
-        Bitmap srcBitmap = BitmapFactory.decodeResource(getResources(), resource);
-        if (showEndBitmap) {
-            Bitmap endBitmap = BitmapFactory.decodeResource(getResources(), endBitmapResource);
-            setIconAnimation(new BitmapDrawable(getResources(), srcBitmap),
-                    new BitmapDrawable(getResources(), endBitmap));
-        } else {
-            setImageBitmap(srcBitmap);
-        }
+    public void setIcon(int drawableResId, int endBitmapResource, @ColorInt int tint) {
+        Drawable drawable = ContextCompat.getDrawable(getContext(), drawableResId).mutate();
+        drawable.setColorFilter(tint, PorterDuff.Mode.SRC_ATOP);
+        setImageDrawable(drawable);
+//        Bitmap srcBitmap = BitmapFactory.decodeResource(getResources(), resource);
+//        if (showEndBitmap) {
+//            Bitmap endBitmap = BitmapFactory.decodeResource(getResources(), endBitmapResource);
+//            setIconAnimation(new BitmapDrawable(getResources(), srcBitmap),
+//                    new BitmapDrawable(getResources(), endBitmap));
+//        } else {
+//            setImageBitmap(srcBitmap);
+//        }
     }
 
     /**
