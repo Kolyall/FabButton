@@ -18,3 +18,11 @@ env:
 
 script:
  - ./gradlew check
+
+# Отправлять уведомление на почту mailto:youremail@smtp.ru(Изменить на свою) если сборка упала
+ notifications:
+   email:
+     recipients:
+     - n.unuchek@gmail.com
+     on_success: always # default: never, always
+     on_failure: always # default: always
